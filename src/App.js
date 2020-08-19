@@ -1,25 +1,77 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled from 'styled-components';
+import Cards from './Components/Cards'
+
+const Master = styled.div`
+display:flex;
+
+padding:10px;
+gap:20px;
+`
+
+const Left = styled.div`
+border: 1px solid black;
+width: 300px;
+height: 98vh;
+`
+
+const Middle = styled.div`
+display:flex;
+flex-direction:row;
+flex-wrap:wrap;
+width: 800px;
+height: 98vh;
+margin-top:15px;
+padding: 15px;
+
+
+`
+const Right = styled.div`
+border: 1px solid black;
+width: 300px;
+height: 98vh;
+
+`
+const Menu = styled.div`
+display: flex;
+justify-content: space-between;
+
+
+heidh: 20px;
+
+
+`
+
+
+
+
+
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Master>
+      <Left>
+      </Left>
+
+      <Middle>
+          <Menu>
+            <p> Quantidade de produtos:{} </p>
+            <select>
+                <option value="Preco Crescente" key="">Preco Crescente</option>
+                <option value="Preco Decrescente" key="">Preco Decrescente</option>
+            </select>
+            
+
+          </Menu>
+              <Cards/>
+          
+      </Middle>
+
+      <Right>
+      </Right>
+           
+    </Master>
   );
 }
 
