@@ -5,7 +5,7 @@ import Filtro from './Components/Filtro'
 
 const Master = styled.div`
 display:flex;
-
+align-items: center;
 padding:10px;
 gap:20px;
 `
@@ -35,10 +35,13 @@ height: 98vh;
 `
 const Menu = styled.div`
 display: flex;
+align-items: center;
 justify-content: space-between;
+width: 100%;
+height: 20px;
+margin-top: 0px;
+margin-bottom: 10px;
 
-
-heidh: 20px;
 
 
 `
