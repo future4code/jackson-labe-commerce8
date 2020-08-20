@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Cards from './Components/Cards'
+import Filtro from './Components/Filtro'
 
 const Master = styled.div`
 display:flex;
@@ -52,6 +53,7 @@ function App() {
   return (
     <Master>
       <Left>
+        <Filtro/>
       </Left>
 
       <Middle>
