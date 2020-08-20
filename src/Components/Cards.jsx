@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Filtro from './Filtro'
 
 const Cartoes = styled.div`
 display: flex;
