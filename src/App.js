@@ -49,7 +49,22 @@ heidh: 20px;
 
 
 
-function App() {
+export default class App extends React.Component {
+  state = {
+    mostrarMensagem: false,
+    
+  };
+  mudarVisibilidade = () => {
+    this.setState({
+      mostrarMensagem: !this.state.mostrarMensagem
+    });
+  };
+
+
+  render(){
+
+
+
   return (
     <Master>
       <Left>
@@ -63,18 +78,21 @@ function App() {
                 <option value="Preco Crescente" key="">Preco Crescente</option>
                 <option value="Preco Decrescente" key="">Preco Decrescente</option>
             </select>
-            
+            <button onClick={this.mudarVisibilidade}>
+          {this.state.mostrarMensagem ? "Ocultar Carrinho" : "Mostrar Carrinho"}
+        </button>
 
           </Menu>
               <Cards/>
           
       </Middle>
-
-      <Right>
-      </Right>
+      {this.state.mostrarMensagem && (
+          <Left>
+            
+          </Left>
+        )}
            
     </Master>
   );
 }
-
-export default App;
+}
