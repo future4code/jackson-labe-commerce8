@@ -144,7 +144,7 @@ export default class App extends React.Component {
 
     novoCarrinho.push(novoArrayProdutos[0])
 
-    this.setState({cartao: novoCarrinho})
+    this.setState({carrinho: novoCarrinho})
     console.log(novoCarrinho)
 }
 
