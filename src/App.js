@@ -5,16 +5,17 @@ import Filtro from './Components/Filtro'
 const Master = styled.div`
 display:flex;
 align-items: center;
-/* padding:10px; */
+padding:10px;
 gap:20px;
+
 `
 
 
 
 const Left = styled.div`
 border: 1px solid black;
-width: 300px;
-height: 98vh;
+width: 350px;
+height: 90vh;
 `
 
 const Middle = styled.div`
@@ -25,13 +26,14 @@ width: 100%;
 height: 98vh;
 margin-top:15px;
 padding: 15px;
-
+overflow-y: scroll;
 
 `
 const Right = styled.div`
 border: 1px solid black;
 width: 300px;
-height: 98vh;
+height: 90vh;
+overflow-y: scroll;
 `
 
 
@@ -124,7 +126,8 @@ export default class App extends React.Component {
 
       }
 
-  ]
+  ],
+  valorTotal: [],
 
 }
   mudarVisibilidade = () => {
@@ -135,7 +138,7 @@ export default class App extends React.Component {
 
   onClickCarrinho = (id) => {
     const novoCarrinho = this.state.carrinho
-
+    const novoValorTotal = this.state.valorTotal
     const novoArrayProdutos = this.state.cartao.filter((produto) => {
         if(id === produto.id) {
             return produto
@@ -145,7 +148,13 @@ export default class App extends React.Component {
     novoCarrinho.push(novoArrayProdutos[0])
 
     this.setState({carrinho: novoCarrinho})
-    console.log(novoCarrinho)
+    console.log(this.state.carrinho)
+    const arrayValor = this.state.carrinho.map((valor) => {
+      return valor.preco
+    })
+
+    novoValorTotal.push(arrayValor[0])
+console.log(this.state.valorTotal)
 }
 
   render(){
@@ -155,8 +164,11 @@ export default class App extends React.Component {
           <Card>
               <Imagem src={card.imagem} />
               <p>
-                  {card.nome},
-                  {card.preco}
+                 Produto: {card.nome}
+                 
+              </p>
+              <p>
+              RS{card.preco}
               </p>
               <Botao onClick={() => {this.onClickCarrinho(card.id)}}>Adicionar no carrinho</Botao>
           </Card>
@@ -169,7 +181,7 @@ export default class App extends React.Component {
       return (
         <div>
           <p>Produto: {produto.nome}</p>
-      <p>Valor: R${produto.preco}</p>
+          <p>Valor: R${produto.preco}</p>
         </div>
       )
     })
@@ -183,9 +195,10 @@ export default class App extends React.Component {
         <Filtro/>
       </Left>
 
-  <Card>{lista}</Card>
+  
 
       <Middle>
+      
           <Menu>
             <p> Quantidade de produtos:{} </p>
             <select>
@@ -198,12 +211,14 @@ export default class App extends React.Component {
         
 
           </Menu>
+          <Cartoes>{lista}</Cartoes>
+          
           
       </Middle>
       {this.state.mostrarMensagem && (
-          <Left>
+          <Right>
             {carrinhoRender()}
-          </Left>
+          </Right>
         )}
            
     </Master>
