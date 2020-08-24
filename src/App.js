@@ -1,227 +1,262 @@
-import React from 'react';
-import styled from 'styled-components';
-import Filtro from './Components/Filtro'
+import React, {Component} from 'react'
+import Filter from './components/Filter/Filter'
+import ItemProducts from './components/ItemProducts/ItemProducts'
+import ItemBasket from './components/ItemBasket/ItemBasket'
+import {list} from './list'
 
-const Master = styled.div`
-display:flex;
-align-items: center;
-padding:10px;
-gap:20px;
+import styled from 'styled-components'
 
+const Main = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 95vw;
+  height: 100vh;
+  margin: 0 auto;
+`;
+
+const FilterContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  width: 10vw;
+  height: 90vh;
+  padding: 1rem 1rem;
+  p{
+    margin: 5px 0px;
+    padding:0;
+  }
+  h1{
+    margin:0;
+    margin-bottom: 15px;
+    padding:0;
+    text-align: center;
+  }
+`;
+
+const Section = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  width: 70vw;
+  padding: 1rem 1rem;
 `
+const Info = styled.div`
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin: 0 15px;
+   p{
+       font-weight: bold;
+   }
+`;
 
+const RightInfo = styled.div`
+    button{
+        margin-left: 10px;
+    }
+`;
 
+const Products = styled.div`
+  display: grid;
+  align-items: center;
+  justify-items:center;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+ 
+`;
 
-const Left = styled.div`
-border: 1px solid black;
-width: 350px;
-height: 90vh;
-`
+const HideMenu = styled.div`
+    width: 18vw;
+    height: 90vh;   
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    border: 1px solid black;
+    padding: 1rem 0.5rem;
 
-const Middle = styled.div`
-display:flex;
-flex-direction:row;
-flex-wrap:wrap;
-width: 100%;
-height: 98vh;
-margin-top:15px;
-padding: 15px;
-overflow-y: scroll;
+    h1, h4{
+      margin:0;
+      margin-bottom: 15px;
+      padding:0;
+    }
+`;
 
-`
-const Right = styled.div`
-border: 1px solid black;
-width: 300px;
-height: 90vh;
-overflow-y: scroll;
-`
-
-
-
-
-
-
-const Menu = styled.div`
-display: flex;
-align-items: center;
-justify-content: space-between;
-width: 100%;
-height: 20px;
-margin-top: 0px;
-margin-bottom: 10px;
-`
-
-const Cartoes = styled.div`
-display: flex;
-flex-wrap:wrap;
-gap: 15px;
-
-`
-
-
-
-const Imagem = styled.img`
-border: 1px solid gray;
-width: 200px;
-height: 200px;
-display:flex;
-justify-items:center;
-`
-
-const Card = styled.div`
-display: flex;
-border: 1px dashed orange;
-width: 200px;
-margin-bottom: 0px;
-height: 350px;
-flex-direction: column;
-padding: 5px 5px;
-align-items: center;`
-
-const Botao = styled.button`
-background:black;
-margin-top:60px;
-font-family: Montserrat;
-font-size: 15px;
-padding: 15px;
-color: white;
-width: 158.75px;
-`
-
-
-
-
-
-
-
-export default class App extends React.Component {
+export default class App extends Component {
   state = {
-    mostrarMensagem: false,
-    carrinho: [],
-    cartao: [
-      {
-          nome: "Item E",
-          preco: 40.50,
-          imagem: "https://picsum.photos/50/50",
-          id: 1
-      },
-      {
-          nome: "Item A",
-          preco: 30.10,
-          imagem: "https://picsum.photos/50/49",
-          id: 2
-      },
-      {
-          nome: "Item B",
-          preco: 50,
-          imagem: "https://picsum.photos/50/48",
-          id: 3
+    allList: list,
+    myBasket: [],
+    showBasket: false,
+    filterText: "",
+    filterMax: null,
+    filterMin: null,
+  }
+  componentDidUpdate(){
+    const objectMyBasket = {
+      myBasket: this.state.myBasket
+    }
+    localStorage.setItem("myBasket", JSON.stringify(objectMyBasket))
+    
+  }
 
-      },
-      {
-          nome: "Item C",
-          preco: 0,
-          imagem: "https://picsum.photos/50/50",
-          id: 4
+  componentDidMount(){
+    const myBasketString = localStorage.getItem("myBasket")
+    const myBasketObject = JSON.parse(myBasketString)
 
-      }
+    if (myBasketObject){
+      this.setState({
+        myBasket: myBasketObject.myBasket
+      })
+    }
+  }
 
-  ],
-  valorTotal: [],
+  //  ---------------SHOWBASKET starts------------------- \\
+  changeBasket = () =>{
+    this.setState({showBasket : !this.state.showBasket})
+  }
+  //  ---------------SHOWBASKET end------------------- \\
 
-}
-  mudarVisibilidade = () => {
-    this.setState({
-      mostrarMensagem: !this.state.mostrarMensagem
-    });
-  };
+  //  ---------------INFO starts------------------- \\
+  changeSelect = (event) => {
+    
+    const noOrder = this.allList
+    let newValue = event.target.value;
 
-  onClickCarrinho = (id) => {
-    const novoCarrinho = this.state.carrinho
-    const novoValorTotal = this.state.valorTotal
-    const novoArrayProdutos = this.state.cartao.filter((produto) => {
-        if(id === produto.id) {
-            return produto
-        }
+    switch(newValue){
+      case "crescente":
+        const ordemCrescente = this.state.allList.sort((a,b) => a.price - b.price)
+        this.setState({allList : ordemCrescente})
+        break
+      case "decrescente":
+        const ordemDecrescente = this.state.allList.sort((a,b) => b.price - a.price)
+        this.setState({allList : ordemDecrescente})
+        break   
+      default: this.setState({allList : noOrder})
+    }
+  }
+  //  ---------------INFO ends------------------- \\
+
+  //  ---------------BASKET ends------------------- \\
+  addBasket = (id) =>{
+    const productBaskets = this.state.myBasket
+    const productBasket = this.state.allList.filter((item) => { 
+      return (id === item.id )
     })
+    productBaskets.push(productBasket[0])
+    this.setState({myBasket : productBaskets})   
+  }
 
-    novoCarrinho.push(novoArrayProdutos[0])
-
-    this.setState({carrinho: novoCarrinho})
-    console.log(this.state.carrinho)
-    const arrayValor = this.state.carrinho.map((valor) => {
-      return valor.preco
+  delBasket = (id) =>{
+    const newBasketList = this.state.myBasket.filter(item =>{
+      return (id !== item.id)
     })
+    this.setState({myBasket : newBasketList})
+  } 
+  //  ---------------BASKET ends------------------- \\
 
-    novoValorTotal.push(arrayValor[0])
-console.log(this.state.valorTotal)
-}
+  //  ---------------FILTER starts------------------- \\
+  filterText = (value) =>{
+    this.setState({filterText : value})
+  }
+
+  filterMax = (value) => {
+    this.setState({filterMax : value})
+  }
+
+  filterMin = (value) =>{
+    this.setState({filterMin : value})
+  }
+  //  ---------------FILTER ends------------------- \\ 
 
   render(){
 
-    const lista = this.state.cartao.map((card) => {
-      return (
-          <Card>
-              <Imagem src={card.imagem} />
-              <p>
-                 Produto: {card.nome}
-                 
-              </p>
-              <p>
-              RS{card.preco}
-              </p>
-              <Botao onClick={() => {this.onClickCarrinho(card.id)}}>Adicionar no carrinho</Botao>
-          </Card>
+    //  ---------------BASKETS starts------------------- \\
 
+    const amountOfProducts = this.state.allList.length
+
+    const basketList = this.state.myBasket.map(item => {
+      return(          
+        <ItemBasket
+        key = {item.id}
+        product = {item} 
+        delBasket = {this.delBasket}            
+        />
         )
-  })
+      })
+      
+      const priceArray = this.state.myBasket.map(item => item.price)
+      const totalBasket = priceArray.reduce((acumulate, currentValue) => acumulate + currentValue, 0)
+   
+    //  ---------------BASKETS ends------------------- \\
 
-  const carrinhoRender = () => {
-    const itensCarrinho = this.state.carrinho.map((produto) => {
-      return (
-        <div>
-          <p>Produto: {produto.nome}</p>
-          <p>Valor: R${produto.preco}</p>
-        </div>
+    //  ---------------PRODUCTS starts------------------- \\
+
+    const productList = this.state.allList
+
+    .filter(item => {
+      return item.name.toLowerCase().indexOf(this.state.filterText) >= 0
+    })  
+
+    .filter(item => {
+      return item.price < (parseFloat(this.state.filterMax) || Infinity)
+    })
+
+    .filter(item => {
+      return item.price > (parseFloat(this.state.filterMin) || 0)
+    })
+    
+    .map(item => {
+      return(
+        <ItemProducts        
+        key = {item.id}
+        product = {item}
+        addBasket = {this.addBasket} 
+        filterText = {this.state.filterText}
+        filterMax = {this.state.filterMax}   
+        filterMin = {this.state.filterMin}      
+        />
       )
     })
-    return itensCarrinho
+
+    //  ---------------PRODUCTS ENDS------------------- \\
+
+    return(
+      <Main>
+          <FilterContainer>
+            <Filter 
+              productText = {this.state.filterText}
+              filterText = {this.filterText}
+              filterMax = {this.filterMax}
+              filterMin = {this.filterMin}
+            />
+          </FilterContainer>
+          <Section>
+              <Info>
+                <p>Quantidade de Produtos: {amountOfProducts}</p>
+                <RightInfo>
+                  <select onChange={this.changeSelect}>
+                    <option value="crescente">Preço: Crescente</option>
+                    <option value="decrescente">Preço: Decrescente</option>
+                  </select>
+                  <button onClick={this.changeBasket}>My Basket</button>
+                </RightInfo>
+              </Info>
+              <Products>
+                {productList}
+              </Products>
+          </Section>
+          {this.state.showBasket && (
+            <HideMenu>
+              <h1>Basket</h1>
+              <h4>Total: R${totalBasket}</h4>
+              {basketList}
+            </HideMenu>
+          )}
+      </Main>
+    )
   }
-    
-
-  return (
-    <Master>
-      <Left>
-        <Filtro/>
-      </Left>
-
-  
-
-      <Middle>
-      
-          <Menu>
-            <p> Quantidade de produtos:{} </p>
-            <select>
-                <option value="Preco Crescente" key="">Preco Crescente</option>
-                <option value="Preco Decrescente" key="">Preco Decrescente</option>
-            </select>
-            <button onClick={this.mudarVisibilidade}>
-          {this.state.mostrarMensagem ? "Ocultar Carrinho" : "Mostrar Carrinho"}
-        </button>
-        
-
-          </Menu>
-          <Cartoes>{lista}</Cartoes>
-          
-          
-      </Middle>
-      {this.state.mostrarMensagem && (
-          <Right>
-            {carrinhoRender()}
-          </Right>
-        )}
-           
-    </Master>
-  );
 }
-}
+
+
+
